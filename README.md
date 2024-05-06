@@ -39,7 +39,7 @@ The provided Makefile defines the following targets:
 
 1. **Build the library:**
 
-  ```bash
+   ```bash
    make 
    ```
 
