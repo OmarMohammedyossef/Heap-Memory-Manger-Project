@@ -45,11 +45,15 @@ The provided Makefile defines the following targets:
 
 2. **Build static library:**
 
+  
+   ```bash
    make static
    ```
 
 3. **Build static library:**
 
+   
+   ```bash
    make synamic
    ```
 
