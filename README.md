@@ -54,7 +54,7 @@ The provided Makefile defines the following targets:
 
    
    ```bash
-   make synamic
+   make dynamic
    ```
 
 
