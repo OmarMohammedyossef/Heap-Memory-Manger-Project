@@ -1,0 +1,18 @@
+set logging file gdb.out
+set logging redirect on
+set logging overwrite on
+set logging enabled on
+
+set $x = firet_p
+
+while ($x != 0)
+    p/x $x
+    p/x *(meta_data_t *)$x
+    if ((((meta_data_t *)$x)->next_block != 0) && (((meta_data_t *)$x)->next_block != (char *)$x + ((meta_data_t *)$x)->size + sizeof(meta_data_t)) )
+       p "Error in the following node"
+       p/x $x
+    end
+    set $x = ((meta_data_t *)$x)->next_block
+end
+
+set logging enabled off
