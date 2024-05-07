@@ -388,13 +388,13 @@ void * My_realloc (void *allocated_ptr, size_t new_size)
                                              meta_data_t *MyNode = (meta_data_t *)((uint8_t *)allocated_ptr-size_meta_data);
                                              meta_data_t *prevNode = MyNode->prev_block;
                                              //merge
-                                             memcpy(((uint8_t *)prevNode+size_meta_data),((uint8_t *)MyNode+size_meta_data),MyNode->size);
                                              prevNode->size =prevNode->size + prevNode->next_block->size + size_meta_data;
 	                                          if (prevNode->next_block->next_block != NULL)
 	                                             {
 	                                              (prevNode->next_block->next_block)->prev_block = prevNode;
 	                                             }
 	                                          prevNode->next_block = prevNode->next_block->next_block;
+						  memcpy(((uint8_t *)prevNode+size_meta_data),allocated_ptr,MyNode->size);
                                           }
                                     }
                                  }
@@ -403,7 +403,7 @@ void * My_realloc (void *allocated_ptr, size_t new_size)
                                        void * new_ptr =My_malloc( new_size);
                                        if(new_ptr!= NULL)
                                              {
-                                                memcpy(new_ptr,allocated_ptr,((meta_data_t *)((uint8_t *)allocated_ptr-size_meta_data))->size);
+                                                memcpy(new_ptr,allocated_ptr,(( meta_data_t *)((uint8_t *)allocated_ptr-size_meta_data))->size);
                                                 My_free(allocated_ptr);
                                              }
                                        return new_ptr;
