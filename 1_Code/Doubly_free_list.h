@@ -87,7 +87,7 @@ state_t insert_beginning (meta_data_t ** list, size_t block_size, state_t free_f
  * @param : double pointer to the list, size of this node and free flag of it.
  * @retval: return status type.
  */
-state_t append_node (meta_data_t ** new_list, size_t block_size, state_t free_flag);
+state_t append_node (  size_t block_size, state_t free_flag);
 
 
 /*
@@ -102,7 +102,7 @@ void split_node (meta_data_t ** list, size_t new_size);
  * @param : nothing.
  * @retval: return nothing.
  */
-void merge_nodes (void);
+void merge_nodes (meta_data_t * free_node);
 
 
 /*
@@ -110,7 +110,7 @@ void merge_nodes (void);
  * @param : single pointer to the head node.
  * @retval: return status type.
  */
-uint32_t sdbrk_down (meta_data_t * ptr);
+uint32_t sdbrk_down ( );
 
 
 /****************************** Th End ************************************/

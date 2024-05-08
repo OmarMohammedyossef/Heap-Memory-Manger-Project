@@ -38,17 +38,17 @@ The provided Makefile defines the following targets:
 ### Usage
 
 1. **Build the library:**
-
+   ```
    make 
    ```
 
 2. **Build static library:**
-
+   ```
    make static
    ```
 
 3. **Build static library:**
-
+   ```
    make synamic
    ```
 

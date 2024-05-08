@@ -34,7 +34,8 @@ meta_data_t *listHead = NULL;	/*sheared recource of head of list* */
 void insert_node (meta_data_t ** list, size_t block_size, meta_data_t * prev, state_t free_flag)
 {
   meta_data_t *newNode = NULL;
-  if (NULL != list)
+  newNode = (meta_data_t *) * list;
+  if (NULL != newNode)
     {
       if (NULL == prev)
         {
@@ -43,7 +44,7 @@ void insert_node (meta_data_t ** list, size_t block_size, meta_data_t * prev, st
         }
       else
         {
-          newNode = (meta_data_t *) * list;
+          
           if (NULL != newNode)
           {
           	newNode->size = block_size;
@@ -113,7 +114,7 @@ state_t insert_beginning (meta_data_t ** list, size_t block_size, state_t free_f
  * @return state_t Success or failure state.
  */
 /**can be oprmized by delete **list and **new_list*/
-state_t append_node (meta_data_t ** new_list, size_t block_size, state_t free_flag)
+state_t append_node ( size_t block_size, state_t free_flag)
 {
   state_t ret = True;
   meta_data_t *tempNode = NULL;
@@ -125,7 +126,7 @@ state_t append_node (meta_data_t ** new_list, size_t block_size, state_t free_fl
       {
         tempNode = tempNode->next_block;
       }
-      newNode = *new_list;
+      newNode = (meta_data_t *) ((uint8_t *) tempNode + tempNode->size +size_meta_data);;
       newNode->size = block_size;
       newNode->free_flag = free_flag;
       newNode->next_block = NULL;
@@ -164,11 +165,10 @@ void split_node (meta_data_t ** list, size_t new_size)
   prevNode = tempNode;
   tempNode =
     (meta_data_t *) ((uint8_t *) tempNode + size_meta_data + new_size);
-  if ((old_size - new_size) > size_meta_data)
+  if ((old_size - new_size) >= size_meta_data)
     {
       /*path insart_node that this node is free* */
-      insert_node (&tempNode, (old_size - new_size - size_meta_data), prevNode,
-  		 True);
+      insert_node (&tempNode, (old_size - new_size - size_meta_data), prevNode, True);
     }
   else
     {
@@ -186,40 +186,40 @@ void split_node (meta_data_t ** list, size_t new_size)
  * @param list Pointer to the head of the doubly linked list.
  * @return uint32_t Total number of merged blocks.
  */
-void merge_nodes (void)
+void merge_nodes (meta_data_t * free_node)
 {
-  meta_data_t *lastNode = NULL;
-  if (NULL != listHead)
-  {
-    lastNode = listHead;
-    while (NULL != lastNode)
-      {
-        if (lastNode->next_block != NULL)
-          {
-          	if (lastNode->free_flag == True && lastNode->next_block->free_flag == True)
-          	{			/*Merge */
-            	  lastNode->size =
-            	    lastNode->size + lastNode->next_block->size + size_meta_data;
-            	  if (lastNode->next_block->next_block != NULL)
+      if (free_node->next_block != NULL)
+        {/*check on the next node*/
+          if (free_node->free_flag == True && free_node->next_block->free_flag == True)
+          	{			/*Merge with next */
+                meta_data_t *after_Node = NULL;
+            	  free_node->size = free_node->size + free_node->next_block->size + size_meta_data;
+            	  if (free_node->next_block->next_block != NULL)
             	  {
-            	    (lastNode->next_block->next_block)->prev_block = lastNode;
+                   after_Node = free_node->next_block->next_block;
+            	     after_Node->prev_block = free_node;
             	  }
-            	  lastNode->next_block = lastNode->next_block->next_block;
-          	  break;
+            	  free_node->next_block = after_Node;
           	}
           	else	{	 /**test the next node*/  }
-
-          }
-        else
-            {				/*this is the last node* */
-            }
-            lastNode = lastNode->next_block;
-          }
-  }
-  else
-  {
-       /**list is free**/
-  }
+        }
+      else if (free_node->prev_block != NULL)
+        {		/*check on the previous node*/	
+          if (free_node->free_flag == True && free_node->prev_block->free_flag == True)
+          	{			/*Merge with previous */
+            	  meta_data_t *after_Node = NULL;
+                meta_data_t *prev_Node = free_node->prev_block;
+            	  prev_Node->size = prev_Node->size +free_node->size + size_meta_data;
+            	  if (free_node->next_block != NULL)
+            	  {
+                   after_Node = free_node->next_block;
+            	     after_Node->prev_block = prev_Node;
+            	  }
+            	  prev_Node->next_block = after_Node;
+          	}
+          	else	{	 /** the prev node is blocked*/  }
+        }
+      else { /*no merge*/  } 
 }
 
 /*************************************************************************/
@@ -233,13 +233,13 @@ void merge_nodes (void)
  * @param ptr Pointer to the memory block to be deallocated.
  * @return state_t Success or failure state.
  */
-uint32_t sdbrk_down (meta_data_t * ptr)
+uint32_t sdbrk_down ()
 {
   uint32_t ret = 0;
   meta_data_t *lastNode = NULL;
-  if (NULL != ptr)
+  if (NULL != listHead)
     {
-      lastNode = ptr;
+      lastNode = listHead;
       while (NULL != lastNode->next_block)
         {
           lastNode = lastNode->next_block;

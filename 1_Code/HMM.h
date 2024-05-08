@@ -9,6 +9,8 @@
 /***************************** Includes section ***************************/
 
 #include "Doubly_free_list.h"
+#define  Minmum_size 8
+#define Maxmum_size 18446744073709551615UL
 
 /***************************** Function  prototype section *************/
 
@@ -59,5 +61,6 @@ void *My_calloc (size_t element_number, size_t element_size);
  */
 void *My_realloc (void *allocated_ptr, size_t new_size);
 
-
 #endif /*__HMM_H__*/
+
+ 
