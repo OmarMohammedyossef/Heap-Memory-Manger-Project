@@ -38,18 +38,36 @@ The provided Makefile defines the following targets:
 ### Usage
 
 1. **Build the library:**
+<<<<<<< HEAD
    ```
+=======
+
+   ```bash
+>>>>>>> 28080e009876c2044c57411cc945987dc22feefc
    make 
    ```
 
 2. **Build static library:**
+<<<<<<< HEAD
    ```
+=======
+
+  
+   ```bash
+>>>>>>> 28080e009876c2044c57411cc945987dc22feefc
    make static
    ```
 
 3. **Build static library:**
+<<<<<<< HEAD
    ```
    make synamic
+=======
+
+   
+   ```bash
+   make dynamic
+>>>>>>> 28080e009876c2044c57411cc945987dc22feefc
    ```
 
 
